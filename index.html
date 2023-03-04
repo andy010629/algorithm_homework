@@ -5,73 +5,15 @@
     <meta charset="UTF-8">
     <title>BST Demo</title>
     <!-- 引入 tailwindcss -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
-    <!-- 引入 vue -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <div id="app" class="flex flex-col items-center p-6 w-full h-screen justify-center">
+<body class="bg-gray-900">
 
-        <div class="flex flex-row space-x-16">
-            <div class="flex flex-col justify-center shadow-xl p-6 bg-indigo-200 rounded-xl space-y-4">
-                <div class="flex flex-col items-center ">
-                    <label for="insert-input" class="text-lg mb-2">插入一個數字：</label>
-                    <div class="flex items-center">
-                        <input id="insert-input" class="w-24 border rounded-l px-2 py-1 mr-0 outline-none" v-model="newNodeValue">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-r px-4 py-1" @click="insertNode">插入</button>
-                    </div>
-                </div>
-                <label for="random-input" class="text-lg mb-2">查詢數字是否存在：</label>
-                <div class="flex items-center">
-                    <input id="random-input" class="w-24 border rounded-l px-2 py-1 mr-0 outline-none" v-model="targetValue">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-r px-4 py-1" @click="searchNode">查詢</button>
-                </div>
-            </div>
-            <div class="flex flex-col items-start bg-indigo-200 rounded-xl p-6">
-
-                <div class="flex flex-col items-start space-y-6">
-                    <label for="insert-input" class="text-lg mb-2">插入隨機 n 個數字：</label>
-                    <div class="flex items-baseline ">
-                        <label for="random-input" class="text-lg mr-4">範圍:</label>
-                        <input id="random-input" class="w-12 border rounded-l px-2 py-1 mr-1 outline-none" v-model="nodeRangeStart"> ~
-                        <input id="random-input" class="w-12 border rounded-l px-2 py-1 ml-1 outline-none" v-model="nodeRangeEnd">
-                    </div>
-                    <div class="flex items-center">
-                        <label for="random-input" class="text-lg mr-4">數量:</label>
-                        <input id="random-input" class="w-24 border rounded-l px-2 py-1 mr-0 outline-none" v-model="nodeCount">
-                    </div>
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-r px-4 py-1" @click="insertMultipleNodes">插入</button>
-
-                </div>
-            </div>
-        </div>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded px-4 py-1 m-8" @click="deleteNode">清除資料</button>
-        <div class="flex flex-col">
-
-            <div class="w-full mt-8 flex flex-col items-center">
-                <h2 class="text-lg mb-4">前序遍歷</h2>
-                <div class="flex flex-wrap justify-center">
-                    <span v-for="(val, idx) in preorderTraversalResult" :key="idx" class="bg-gray-200 rounded-full px-4 py-1 mx-1">{{val}}</span>
-                </div>
-            </div>
-            <div class="w-full mt-8 flex flex-col items-center">
-                <h2 class="text-lg mb-4">中序遍歷</h2>
-                <div class="flex flex-wrap justify-center">
-                    <span v-for="(val, idx) in inorderTraversalResult" :key="idx" class="bg-gray-200 rounded-full px-4 py-1 mx-1">{{val}}</span>
-                </div>
-            </div>
-            <div class="w-full mt-8 flex flex-col items-center">
-                <h2 class="text-lg mb-4">後序遍歷</h2>
-                <div class="flex flex-wrap justify-center">
-                    <span v-for="(val, idx) in postorderTraversalResult" :key="idx" class="bg-gray-200 rounded-full px-4 py-1 mx-1">{{val}}</span>
-                </div>
-            </div>
-
-        </div>
-
+    <div class="w-full h-screen flex flex-col justify-center items-center mx-auto py-8">
+        <h1 class="text-2xl font-bold mb-4 text-gray-200 md:mb-8">ALGO111 演算法作業</h1>
+        <a href="hw1/index.html" class="hover:bg-gray-500 duration-500 text-lg font-bold mb-4 text-gray-900 bg-gray-100 p-4 rounded-lg shadow shadow-slate-100">作業一：二元搜尋樹的資料新增與搜尋</a>
     </div>
-    <script src="index.js"></script>
 </body>
 
 </html>
