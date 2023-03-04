@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>作業一：二元搜尋樹的資料新增與搜尋</title>
     <!-- 引入 tailwindcss -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
@@ -11,9 +12,9 @@
 </head>
 
 <body class="bg-gray-900 font-bold">
-    <div id="app" class="flex flex-col items-center p-6 w-full h-screen justify-center">
+    <div id="app" class="flex flex-col items-center p-6 w-full md:h-screen justify-center">
 
-        <div class="flex flex-row space-x-16">
+        <div class="flex flex-col space-y-4 md:flex-row md:space-x-16 md:space-y-0">
             <div class="flex flex-col justify-center shadow-xl p-6 bg-gray-300 rounded-xl space-y-4">
                 <div class="flex flex-col items-center ">
                     <label for="insert-input" class="text-lg mb-2">插入一個數字：</label>
@@ -30,7 +31,7 @@
             </div>
             <div class="flex flex-col items-start bg-gray-300 rounded-xl p-6">
 
-                <div class="flex flex-col items-start space-y-6">
+                <div class="flex flex-col items-start space-y-2 md:space-y-6">
                     <label for="insert-input" class="text-lg mb-2">插入隨機 n 個數字：</label>
                     <div class="flex items-baseline ">
                         <label for="random-input" class="text-lg mr-4">範圍:</label>
@@ -46,10 +47,10 @@
                 </div>
             </div>
         </div>
-        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold rounded px-4 py-1 m-8" @click="deleteNode">清除資料</button>
+        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold rounded px-4 py-1 m-4 md:m-8" @click="deleteNode">清除資料</button>
         <div class="flex flex-col">
 
-            <div class="w-full mt-8 flex flex-col items-center">
+            <div class="w-full mt-4 md:mt-8 flex flex-col items-center">
                 <h2 class="text-xl mb-4 text-gray-100">前序遍歷</h2>
                 <div class="flex flex-wrap justify-center">
                     <span v-for="(val, idx) in preorderTraversalResult" :key="idx" class="bg-gray-200 rounded-full px-4 py-1 mx-1">{{val}}</span>
