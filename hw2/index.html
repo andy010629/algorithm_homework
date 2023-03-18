@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Search Tree</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body class="bg-gray-900 font-bold text-gray-100">
+    <div id="app" class="p-4 flex flex-col items-center md:mt-16">
+        <h1 class="text-2xl mb-4">Binary Search Tree Operations</h1>
+        <div class="mb-4">
+            <label for="input-data" class="block mb-2">Enter data to insert:</label>
+            <input type="number" v-model="data" class="border px-2 py-1 text-gray-900">
+
+            <button @click="insertData(true)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Recursive)</button>
+            <button @click="insertData(false)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Iterative)</button>
+
+        </div>
+        <div class="mb-4">
+            <label for="input-target" class="block mb-2">Enter target to search:</label>
+            <input type="number" v-model="search_target" class="border px-2 py-1 text-gray-900">
+            <button @click="searchTarget(true)" class="bg-blue-500 text-white px-4 py-1 ml-2">Search (Recursive)</button>
+            <button @click="searchTarget(false)" class="bg-blue-500 text-white px-4 py-1 ml-2">Search (Iterative)</button>
+            <p v-if="searchResult !== null" class="mt-2">{{ searchResult ? 'Target found.' : 'Target not found.' }}</p>
+        </div>
+        <div class="mb-4">
+            <label for="input-k" class="block mb-2">Enter k (number of random data to insert):</label>
+            <input type="number" v-model="k" class="border px-2 py-1 text-gray-900">
+            <button @click="insertRandomNumbers(true)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Recursive)</button>
+            <button @click="insertRandomNumbers(false)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Iterative)</button>
+        </div>
+        <div class="mb-4">
+            <label for="input-target" class="block mb-2">Enter target to delete:</label>
+            <input type="number" v-model="target" class="border px-2 py-1 text-gray-900">
+            <button @click="deleteTarget()" class="bg-blue-500 text-white px-4 py-1 ml-2">Delete (Recursive)</button>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">Pre-order Traversal:</h2>
+            <p class="border p-2">{{ preOrderResult.join(', ') }}</p>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">In-order Traversal:</h2>
+            <p class="border p-2">{{ inOrderResult.join(', ') }}</p>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">Post-order Traversal:</h2>
+            <p class="border p-2">{{ postOrderResult.join(', ') }}</p>
+        </div>
+    </div>
+    <script src="index.js"></script>
+    <script>
+        // 在這裡粘貼上之前提供的 JavaScript 代碼（Node、BST 類等）
+
+        new Vue({
+            el: '#app',
+            data: {
+                data: null,
+                search_target: null,
+                target: null,
+                searchResult: null,
+                k: null,
+                bst: new BST(),
+                preOrderResult: [],
+                inOrderResult: [],
+                postOrderResult: []
+            },
+            methods: {
+                insertData(recursive) {
+                    if (this.data !== null) {
+                        if (recursive) {
+                            this.bst.insert(this.data);
+                        } else {
+                            this.bst.insertIteratively(this.data);
+                        }
+                        this.updateTraversals();
+                    }
+                },
+                searchTarget(recursive) {
+                    if (this.search_target !== null) {
+                        this.searchResult = recursive ?
+                            this.bst.search(this.bst.root, this.search_target) :
+                            this.bst.searchIteratively(this.search_target);
+                    }
+                },
+                insertRandomNumbers(recursive) {
+                    if (this.k !== null) {
+                        const range = 100; // You can change this value
+                        for (let i = 0; i < this.k; i++) {
+                            const randomData = Math.floor(Math.random() * range);
+                            if (recursive) {
+                                this.bst.insert(randomData);
+                            } else {
+                                this.bst.insertIteratively(randomData);
+                            }
+                        }
+                        this.updateTraversals();
+                    }
+                },
+                deleteTarget() {
+                    if (this.target !== null) {
+                        this.bst.delete(this.bst.root, this.target);
+                        this.updateTraversals();
+                    }
+                },
+                updateTraversals() {
+                    const preOrder = [];
+                    const inOrder = [];
+                    const postOrder = [];
+
+                    this.bst.preOrderTraversal(this.bst.root, preOrder);
+                    this.bst.inOrderTraversal(this.bst.root, inOrder);
+                    this.bst.postOrderTraversal(this.bst.root, postOrder);
+
+                    this.preOrderResult = preOrder;
+                    this.inOrderResult = inOrder;
+                    this.postOrderResult = postOrder;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+</html>
