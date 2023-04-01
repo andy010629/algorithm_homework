@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Network</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+        #mynetwork {
+            width: 600px;
+            height: 400px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 font-bold text-gray-100">
+    <div id="app" class="p-4 flex flex-col items-center md:mt-16">
+        <h1 class="text-2xl mb-4">Binary Search Tree Operations</h1>
+        <div class="mb-4">
+            <label for="input-data" class="block mb-2">Enter data to insert:</label>
+            <input type="number" v-model="data" class="border px-2 py-1 text-gray-900">
+            <button @click="insertData(true)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Recursive)</button>
+            <button @click="insertData(false)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Iterative)</button>
+        </div>
+        <div class="mb-4">
+            <label for="input-target" class="block mb-2">Enter target to search:</label>
+            <input type="number" v-model="search_target" class="border px-2 py-1 text-gray-900">
+            <button @click="searchTarget(true)" class="bg-blue-500 text-white px-4 py-1 ml-2">Search (Recursive)</button>
+            <button @click="searchTarget(false)" class="bg-blue-500 text-white px-4 py-1 ml-2">Search (Iterative)</button>
+            <p v-if="searchResult !== null" class="mt-2">{{ searchResult ? 'Target found.' : 'Target not found.' }}</p>
+        </div>
+
+        <div class="mb-4">
+            <label for="input-k" class="block mb-2">Enter k (number of random data to insert):</label>
+            <input type="number" v-model="k" class="border px-2 py-1 text-gray-900">
+            <button @click="insertRandomNumbers(true)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Recursive)</button>
+            <button @click="insertRandomNumbers(false)" class="bg-blue-500 text-white px-4 py-1 ml-2">Insert (Iterative)</button>
+        </div>
+        <div class="mb-4">
+            <label for="input-target" class="block mb-2">Enter target to delete:</label>
+            <input type="number" v-model="target" class="border px-2 py-1 text-gray-900">
+            <button @click="deleteTarget()" class="bg-blue-500 text-white px-4 py-1 ml-2">Delete (Recursive)</button>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">Pre-order Traversal:</h2>
+            <input id="preorder_input" class="text-black border p-2 w-96"></input>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">In-order Traversal:</h2>
+            <input id="inorder_input" class="text-black border p-2 w-96"></input>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">Post-order Traversal:</h2>
+            <input id="postorder_input" class="text-black border p-2 w-96"></input>
+        </div>
+        <div>
+            <h2 class="text-xl mb-2">level-order Traversal:</h2>
+            <input id="levelorder_input" class="text-black border p-2 w-96"></input>
+        </div>
+        <div class="my-4 ">
+            <button @click="buildTreeFromPreorderInorder()" class="bg-blue-500 text-white px-4 py-1 ml-2">中序 前序 決定其二元樹</button>
+            <button @click="buildTreeFromInorderPostorder()" class="bg-blue-500 text-white px-4 py-1 ml-2">中序 後序 決定其二元樹</button>
+            <button @click="buildTreeFromInorderLevelorder()" class="bg-blue-500 text-white px-4 py-1 ml-2">中序 階層 決定其二元樹</button>
+        </div>
+    </div>
+
+    <script src="bst.js"></script>
+    <script>
+        // 在這裡粘貼上之前提供的 JavaScript 代碼（Node、BST 類等）
+
+        new Vue({
+            el: '#app',
+            data: {
+                data: null,
+                search_target: null,
+                target: null,
+                searchResult: null,
+                k: null,
+                bst: new BST(),
+                preOrderResult: [],
+                inOrderResult: [],
+                postOrderResult: [],
+                levelOrderResult: [],
+                nodesArray: [],
+                edgesArray: [],
+                network: null
+            },
+            computed: {
+                TreeString() {
+                    const levels = [];
+                    let root = this.bst.root;
+
+                    function traverse(node, level) {
+                        if (node) {
+                            if (!levels[level]) {
+                                levels[level] = [];
+                            }
+                            levels[level].push(node.data);
+                            traverse(node.left, level + 1);
+                            traverse(node.right, level + 1);
+                        } else {
+                            if (!levels[level]) {
+                                levels[level] = [];
+                            }
+                            levels[level].push(null);
+                        }
+                    }
+
+                    traverse(root, 0);
+
+                    const maxWidth = Math.pow(2, levels.length) - 1;
+                    const spacing = Math.floor(maxWidth / 2);
+
+                    let treeString = '';
+                    levels.forEach((level, i) => {
+                        let line = "";
+                        let space = " ".repeat(spacing / Math.pow(2, i));
+                        level.forEach(node => {
+                            line += space + (node || " ") + space;
+                        });
+                        treeString += line + '\n';
+                    });
+
+                    return treeString;
+                }
+            },
+            mounted() {
+                container = document.getElementById("tree-container");
+                const options = {
+                    layout: {
+                        hierarchical: {
+                            direction: "UD", // Root is at the top
+                            sortMethod: "directed",
+                            nodeSpacing: 100,
+                            levelSeparation: 100,
+                        }
+                    },
+                    physics: {
+                        enabled: false
+                    },
+                    nodes: {
+                        shape: "circle",
+                        size: 50,
+                        font: {
+                            size: 24
+                        },
+                        borderWidth: 2
+                    },
+                    edges: {
+                        arrows: {
+                            to: {
+                                enabled: false
+                            }
+                        },
+                        smooth: false
+                    }
+                };
+                const data = {
+                    nodes: [new vis.DataSet()],
+                    edges: new vis.DataSet()
+                };
+                this.network = new vis.Network(container, data, options);
+            },
+            methods: {
+                insertData(recursive) {
+                    if (this.data !== null) {
+                        if (recursive) {
+                            this.bst.insert(this.data);
+                        } else {
+                            this.bst.insertIteratively(this.data);
+                        }
+                        this.updateTraversals();
+                    }
+                },
+                searchTarget(recursive) {
+                    if (this.search_target !== null) {
+                        this.searchResult = recursive ?
+                            this.bst.search(this.bst.root, this.search_target) :
+                            this.bst.searchIteratively(this.search_target);
+                        if (!this.searchResult) {
+                            this.bst.insert(this.search_target);
+                        }
+                    }
+                    this.updateTraversals();
+                },
+                insertRandomNumbers(recursive) {
+                    if (this.k !== null) {
+                        const range = 100; // You can change this value
+                        for (let i = 0; i < this.k; i++) {
+                            const randomData = Math.floor(Math.random() * range);
+                            if (recursive) {
+                                this.bst.insert(randomData);
+                            } else {
+                                this.bst.insertIteratively(randomData);
+                            }
+                        }
+                        this.updateTraversals();
+                    }
+                },
+                deleteTarget() {
+                    if (this.target !== null) {
+                        this.bst.delete(this.bst.root, this.target);
+                        this.updateTraversals();
+                    }
+                },
+                updateTraversals() {
+                    this.preOrderResult = this.bst.preOrderTraversal(this.bst.root);
+                    this.inOrderResult = this.bst.inOrderTraversal(this.bst.root);
+                    this.postOrderResult = this.bst.postOrderTraversal(this.bst.root);
+                    this.levelOrderResult = this.bst.levelOrderTraversal(this.bst.root);
+                    document.querySelector('#preorder_input').value = this.preOrderResult.join(', ');
+                    document.querySelector('#inorder_input').value = this.inOrderResult.join(', ');
+                    document.querySelector('#postorder_input').value = this.postOrderResult.join(', ');
+                    document.querySelector('#levelorder_input').value = this.levelOrderResult.join(', ');
+                },
+                buildTreeFromPreorderInorder() {
+                    const preorder = document.querySelector('#preorder_input').value.split(',').map(x => parseInt(x));
+                    const inorder = document.querySelector('#inorder_input').value.split(',').map(x => parseInt(x));
+                    if (preorder.length !== inorder.length) {
+                        alert('前序與中序的長度不同，無法建構二元樹');
+                        return;
+                    }
+                    if (preorder.length === 0 || inorder.length === 0) {
+                        alert('前序與中序的長度為 0，無法建構二元樹');
+                        return;
+                    }
+
+                    this.bst.root = this.bst.buildTreeFromPreorderInorder(preorder, inorder);
+                    this.updateTraversals();
+                },
+                buildTreeFromInorderPostorder() {
+                    const inorder = document.querySelector('#inorder_input').value.split(',').map(x => parseInt(x));
+                    const postorder = document.querySelector('#postorder_input').value.split(',').map(x => parseInt(x));
+                    if (inorder.length !== postorder.length) {
+                        alert('中序與後序的長度不同，無法建構二元樹');
+                        return;
+                    }
+                    if (inorder.length === 0 || postorder.length === 0) {
+                        alert('中序與後序的長度為 0，無法建構二元樹');
+                        return;
+                    }
+
+                    this.bst.root = this.bst.buildTreeFromInorderPostorder(inorder, postorder);
+                    this.updateTraversals();
+                },
+                buildTreeFromInorderLevelorder() {
+                    const inorder = document.querySelector('#inorder_input').value.split(',').map(x => parseInt(x));
+                    const levelorder = document.querySelector('#levelorder_input').value.split(',').map(x => parseInt(x));
+                    if (inorder.length !== levelorder.length) {
+                        alert('中序與層序的長度不同，無法建構二元樹');
+                        return;
+                    }
+                    if (inorder.length === 0 || levelorder.length === 0) {
+                        alert('中序與層序的長度為 0，無法建構二元樹');
+                        return;
+                    }
+
+                    this.bst.root = this.bst.buildTreeFromInorderLevelorder(inorder, levelorder);
+                    this.updateTraversals();
+                },
+
+            }
+        });
+    </script>
+</body>
+
+</html>
